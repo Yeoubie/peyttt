@@ -1,0 +1,2887 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Angel Faith 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+</head>
+<style>
+    /* =========================================
+       CORE RESET
+       ========================================= */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+    }
+
+    body,
+    html {
+        height: 100%;
+        width: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        font-family: 'VT323', monospace;
+        cursor: default;
+        overscroll-behavior: none;
+    }
+
+    input,
+    textarea {
+        user-select: text;
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+    }
+
+    /* =========================================
+       BACKGROUNDS & ANIMATIONS
+       ========================================= */
+    .bg-fixed {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #ff1493 0%, #ff69b4 25%, #ffc0cb 50%, #ff69b4 75%, #ff1493 100%);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+        z-index: -2;
+    }
+
+    .pixel-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image:
+            repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.03) 2px, rgba(255, 255, 255, 0.03) 4px),
+            repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255, 255, 255, 0.03) 2px, rgba(255, 255, 255, 0.03) 4px);
+        z-index: -1;
+        pointer-events: none;
+    }
+
+    @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    @keyframes slideInDream { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    @keyframes fadeInPulse { 0% { opacity: 0; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.05); } 100% { opacity: 1; transform: scale(1); } }
+    @keyframes shake { 0%, 100% { transform: translateX(0) rotate(0deg); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-8px) rotate(-3deg); } 20%, 40%, 60%, 80% { transform: translateX(8px) rotate(3deg); } }
+    @keyframes heartBeat { 0%, 100% { transform: scale(1); } 10%, 30% { transform: scale(0.9); } 20%, 40% { transform: scale(1.1); } }
+    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0.3; } }
+    @keyframes successPulse { 0% { box-shadow: 0 0 0 rgba(0, 255, 0, 0.8); } 50% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.8); } 100% { box-shadow: 0 0 0 rgba(0, 255, 0, 0.8); } }
+
+    .unscramble-input.correct { border-color: #00ff00; animation: successPulse 0.6s ease-out; }
+    .puzzle-piece.correct { animation: successPulse 0.6s ease-out; }
+
+    /* =========================================
+       SCREENS & CONTAINERS
+       ========================================= */
+    #videoScreen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        z-index: 200;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        opacity: 1;
+        transition: opacity 0.8s ease;
+        pointer-events: auto;
+    }
+
+    .video-header {
+        text-align: center;
+        margin-bottom: 30px;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    .video-header h1 {
+        font-family: 'Press Start 2P';
+        font-size: clamp(16px, 4vw, 24px);
+        color: #ff1493;
+        text-shadow: 0 0 20px rgba(255, 20, 147, 0.8);
+        margin-bottom: 15px;
+        line-height: 1.6;
+    }
+
+    .video-header p {
+        color: #fff;
+        font-family: 'VT323';
+        font-size: clamp(14px, 3vw, 18px);
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .video-container {
+        max-width: min(90%, 800px);
+        max-height: 60vh;
+        position: relative;
+        border: 5px solid #ff1493;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 50px rgba(255, 20, 147, 0.8);
+        background: #000;
+        aspect-ratio: 16 / 9;
+    }
+
+    .video-container video { width: 100%; height: 100%; display: block; background: #000; object-fit: contain; }
+
+    .play-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10;
+    }
+
+    .play-overlay:hover { background: rgba(0, 0, 0, 0.8); }
+    .play-overlay.hidden { opacity: 0; pointer-events: none; }
+
+    .play-btn {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff1493, #ff69b4);
+        border: 4px solid white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 20px rgba(255, 20, 147, 0.6);
+        animation: pulse 2s infinite;
+    }
+
+    .play-overlay:hover .play-btn { transform: scale(1.1); box-shadow: 0 8px 30px rgba(255, 20, 147, 0.8); }
+    .play-text { margin-top: 20px; font-family: 'Press Start 2P'; font-size: clamp(10px, 2.5vw, 14px); color: white; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); }
+    .video-progress { margin-top: 30px; text-align: center; }
+
+    .continue-after-video {
+        display: none;
+        background: linear-gradient(135deg, #ff1493, #ff69b4);
+        border: 3px solid white;
+        color: white;
+        padding: 15px 40px;
+        font-family: 'Press Start 2P';
+        font-size: clamp(10px, 2.5vw, 14px);
+        cursor: pointer;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(255, 20, 147, 0.6);
+        animation: pulse 2s infinite;
+    }
+    .continue-after-video:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255, 20, 147, 0.8); }
+
+    #introScreen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, #1a1a2e, #0f0f1e);
+        z-index: 100;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .big-heart {
+        font-size: clamp(60px, 15vw, 100px);
+        animation: heartBeat 1.5s infinite;
+        cursor: pointer;
+        filter: drop-shadow(0 0 20px rgba(255, 20, 147, 0.8));
+        transition: all 0.3s ease;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .big-heart:hover { transform: scale(1.3); filter: drop-shadow(0 0 40px rgba(255, 20, 147, 1)); }
+    .big-heart:active { transform: scale(1.1); }
+
+    .intro-text {
+        color: white;
+        margin-top: 30px;
+        font-family: 'Press Start 2P';
+        font-size: clamp(8px, 2.5vw, 12px);
+        animation: blink 1.5s infinite;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        text-align: center;
+        line-height: 1.6;
+    }
+
+    /* Main Container */
+    .main-container {
+        width: 100%;
+        max-width: 800px;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        margin: 0 auto;
+        padding: 20px;
+        height: 100vh;
+    }
+
+    @media (min-width: 768px) { .main-container { padding-top: 100px; padding-bottom: 180px; } }
+
+    .main-container::-webkit-scrollbar { width: 8px; }
+    .main-container::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); }
+    .main-container::-webkit-scrollbar-thumb { background: #ff1493; border-radius: 10px; }
+
+    .pixel-sprite {
+        width: clamp(100px, 25vw, 150px);
+        image-rendering: pixelated;
+        margin-bottom: 30px;
+        animation: bounce 2s infinite;
+        filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+        transition: opacity 0.3s ease;
+    }
+
+    /* Message Box */
+    .message-box {
+        background: linear-gradient(135deg, #2d2d44 0%, #1a1a2e 100%);
+        border: 4px solid #fff;
+        outline: 4px solid #ff1493;
+        padding: clamp(25px, 6vw, 40px);
+        width: 100%;
+        max-width: 700px;
+        min-height: 200px;
+        position: relative;
+        box-shadow: 0 8px 0 #ffb6d9, 0 12px 25px rgba(0, 0, 0, 0.4);
+        overflow: visible;
+        border-radius: 10px;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .message-text {
+        color: #fff;
+        font-family: 'VT323';
+        font-size: clamp(22px, 5.5vw, 32px);
+        line-height: 1.6;
+        text-align: center;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        word-wrap: break-word;
+        width: 100%;
+    }
+
+    .audio-btn, .back-btn {
+        position: fixed;
+        top: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        border: 3px solid white;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        -webkit-tap-highlight-color: transparent;
+    }
+    .audio-btn { right: 20px; }
+    .audio-btn:hover { background: rgba(255, 255, 255, 0.4); transform: scale(1.1); }
+    .back-btn { left: 20px; display: none; z-index: 1001; }
+    .back-btn:hover { background: rgba(255, 255, 255, 0.4); transform: scale(1.1); }
+
+    /* Puzzle Gallery Modal */
+    .photo-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 2000;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    .puzzle-container {
+        max-width: min(90%, 600px);
+        max-height: 70vh;
+        position: relative;
+        border: 5px solid #ff1493;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 50px rgba(255, 20, 147, 0.5);
+        background: #1a1a2e;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .puzzle-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        gap: 2px;
+        background: #ff1493;
+        padding: 2px;
+        width: min(90vw, 500px);
+        height: min(90vw, 500px);
+        aspect-ratio: 1;
+    }
+
+    .puzzle-piece {
+        background-size: 300% 300%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        position: relative;
+    }
+    .puzzle-piece:hover { border-color: #ffd700; transform: scale(1.05); z-index: 10; }
+    .puzzle-piece.selected { border-color: #00ff00; box-shadow: 0 0 20px rgba(0, 255, 0, 0.8); }
+    .puzzle-piece.correct { border-color: #ff1493 !important; pointer-events: none; opacity: 1; }
+
+    .photo-caption {
+        color: white;
+        font-family: 'Press Start 2P';
+        font-size: clamp(10px, 2.5vw, 14px);
+        text-align: center;
+        margin-top: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        max-width: 90%;
+        line-height: 1.6;
+    }
+
+    .puzzle-controls { display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap; justify-content: center; }
+
+    .puzzle-btn {
+        background: linear-gradient(135deg, #ff1493, #ff69b4);
+        border: 3px solid white;
+        color: white;
+        padding: 12px 25px;
+        font-family: 'Press Start 2P';
+        font-size: clamp(8px, 2vw, 12px);
+        cursor: pointer;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(255, 20, 147, 0.4);
+    }
+    .puzzle-btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255, 20, 147, 0.6); }
+    .puzzle-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .puzzle-status {
+        color: #ffd700;
+        font-family: 'VT323';
+        font-size: clamp(16px, 3.5vw, 20px);
+        text-align: center;
+        margin-top: 15px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    }
+
+    .puzzle-health { display: flex; gap: 5px; justify-content: center; margin-top: 15px; align-items: center; flex-wrap: wrap; }
+    .health-heart { font-size: 24px; transition: all 0.3s ease; }
+    .health-heart.lost { opacity: 0.3; filter: grayscale(1); }
+    .shuffle-counter { color: #ffd700; font-family: 'Press Start 2P'; font-size: clamp(8px, 2vw, 12px); margin-left: 10px; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+
+    .close-gallery {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 40px;
+        color: white;
+        cursor: pointer;
+        z-index: 100;
+        transition: all 0.3s ease;
+    }
+    .close-gallery:hover { transform: scale(1.2); filter: drop-shadow(0 0 10px rgba(255, 20, 147, 0.8)); }
+    .close-gallery.disabled { opacity: 0.5; cursor: not-allowed; animation: shake 0.5s ease; }
+
+    /* =========================================
+       GAME & CHOICE AREA - CENTERED FIXES
+       ========================================= */
+    .game-area {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(29, 53, 87, 0.95), rgba(26, 26, 46, 0.95));
+        z-index: 50;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 80px 20px 20px;
+        overflow-y: auto;
+    }
+    .game-area::-webkit-scrollbar { width: 8px; }
+    .game-area::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+    .game-area::-webkit-scrollbar-thumb { background: #ff1493; border-radius: 10px; }
+
+    .game-instruction {
+        color: #ff1493;
+        font-family: 'Press Start 2P';
+        font-size: clamp(14px, 4vw, 20px);
+        text-align: center;
+        text-shadow: 0 0 20px rgba(255, 20, 147, 0.8);
+        margin-bottom: 30px;
+        padding: 0 20px;
+        line-height: 1.8;
+    }
+
+    .scramble-container {
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .scramble-word {
+        background: linear-gradient(135deg, rgba(255, 20, 147, 0.3), rgba(255, 105, 180, 0.2));
+        border: 3px solid #ff1493;
+        border-radius: 15px;
+        padding: 30px 20px;
+        margin: 20px auto;
+        width: 95%;
+        max-width: 500px;
+        color: white;
+        text-align: center;
+    }
+
+    .scrambled-text {
+        font-family: 'VT323';
+        font-size: clamp(24px, 6vw, 36px);
+        color: #ffd700;
+        letter-spacing: 4px;
+        margin: 20px 0;
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        word-break: break-word;
+    }
+
+    .unscramble-input {
+        width: 90%;
+        max-width: 400px;
+        padding: 15px;
+        font-family: 'VT323';
+        font-size: clamp(18px, 4.5vw, 24px);
+        text-align: center;
+        border: 3px solid #ff1493;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        margin: 15px auto;
+        display: block;
+    }
+    .unscramble-input::placeholder { color: rgba(255, 255, 255, 0.5); }
+
+    .dream-card {
+        background: linear-gradient(135deg, rgba(255, 20, 147, 0.15), rgba(255, 105, 180, 0.1));
+        border-left: 4px solid #ff1493;
+        padding: 18px;
+        border-radius: 8px;
+        color: white;
+        font-family: 'VT323';
+        font-size: clamp(16px, 4vw, 20px);
+        animation: slideInDream 0.6s ease-out;
+    }
+
+    /* CENTERED BUTTONS & CHOICES */
+    .choice-container,
+    .trivia-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Horizontally center */
+        justify-content: center;
+        width: 100%;
+        text-align: center;
+    }
+
+    .choice-btn,
+    .trivia-option {
+        width: 90%;
+        max-width: 400px;
+        margin: 10px auto; /* Centers the button itself */
+        background: linear-gradient(135deg, rgba(255, 20, 147, 0.2), rgba(255, 105, 180, 0.15));
+        border: 2px solid #ff1493;
+        color: white;
+        padding: clamp(12px, 3vw, 18px);
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: 'VT323';
+        font-size: clamp(18px, 4vw, 22px);
+        transition: all 0.3s ease;
+        text-align: center;
+        min-height: 48px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .choice-btn:hover,
+    .trivia-option:hover {
+        background: linear-gradient(135deg, rgba(255, 20, 147, 0.4), rgba(255, 105, 180, 0.3));
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(255, 20, 147, 0.4);
+    }
+    
+    .choice-btn.correct, .trivia-option.correct {
+        background: linear-gradient(135deg, #00ff00, #00cc00);
+        border-color: #00ff00;
+        box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+        color: #fff;
+    }
+
+    .choice-btn.incorrect, .trivia-option.incorrect {
+        background: linear-gradient(135deg, #ff0000, #cc0000);
+        border-color: #ff0000;
+        box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+        animation: shake 0.5s ease;
+    }
+
+    /* Date Card */
+    .date-card {
+        background: linear-gradient(135deg, rgba(255, 20, 147, 0.5), rgba(255, 105, 180, 0.4));
+        border: 4px solid #ff1493;
+        border-radius: 20px;
+        padding: clamp(25px, 5vw, 40px);
+        color: white;
+        font-family: 'VT323';
+        font-size: clamp(16px, 3.5vw, 20px);
+        text-align: center;
+        margin: 20px auto;
+        max-width: min(90%, 700px);
+        width: 100%;
+        box-shadow: 0 0 30px rgba(255, 20, 147, 0.6);
+        display: none;
+        overflow-y: auto;
+        max-height: 80vh;
+        line-height: 1.8;
+    }
+    .date-card::-webkit-scrollbar { width: 8px; }
+    .date-card::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+    .date-card::-webkit-scrollbar-thumb { background: #ff1493; border-radius: 10px; }
+
+    .date-card h2 {
+        font-family: 'Press Start 2P';
+        font-size: clamp(14px, 3.5vw, 18px);
+        color: #ffd700;
+        text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+        margin-bottom: 25px;
+        line-height: 1.8;
+    }
+
+    .date-card .label { color: #ffd700; font-weight: bold; display: block; margin-top: 20px; text-shadow: 0 0 8px rgba(255, 215, 0, 0.5); font-size: clamp(14px, 3vw, 18px); }
+    .date-card .value { color: #fff; display: block; margin: 10px 0 0 0; text-shadow: 0 0 8px rgba(255, 20, 147, 0.3); font-size: clamp(14px, 3vw, 18px); }
+
+    /* Final Buttons */
+    #finalButtons {
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: none;
+        gap: 20px;
+        z-index: 100;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 0 20px;
+        max-width: 90%;
+    }
+
+    @media (max-width: 480px) {
+        #finalButtons {
+            bottom: 60px;
+            flex-direction: column;
+            gap: 15px;
+        }
+    }
+
+    .yes-btn, .no-btn {
+        padding: clamp(15px, 4vw, 20px) clamp(35px, 8vw, 50px);
+        font-family: 'Press Start 2P';
+        font-size: clamp(12px, 3vw, 16px);
+        border: 4px solid white;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+        min-height: 60px;
+        min-width: 140px;
+        position: relative;
+    }
+    .yes-btn { background: linear-gradient(135deg, #00ff00, #00cc00); color: white; z-index: 101; }
+    .yes-btn:hover { transform: scale(1.1); box-shadow: 0 8px 30px rgba(0, 255, 0, 0.6); }
+    .no-btn { background: linear-gradient(135deg, #ff69b4, #ff1493); color: white; z-index: 100; }
+    .no-btn:hover { transform: scale(0.95); }
+
+    .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        pointer-events: none;
+        animation: confettiFall 3s forwards;
+        z-index: 9999;
+    }
+    @keyframes confettiFall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+
+    .progress-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: rgba(0, 0, 0, 0.3);
+        z-index: 999;
+    }
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #ff1493, #ff69b4);
+        transition: width 0.5s ease;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(255, 20, 147, 0.8);
+    }
+
+    /* SKIP TIMER - FIXED & CENTERED */
+    .skip-timer {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%); /* Ensures horizontal centering */
+        
+        display: none;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        white-space: nowrap;
+        width: auto;
+        min-width: 200px;
+        max-width: 90%;
+        
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        padding: 12px 25px;
+        border-radius: 50px;
+        color: white;
+        font-family: 'VT323';
+        font-size: 18px;
+        z-index: 99999;
+        transition: all 0.3s ease;
+    }
+
+    .skip-timer.active {
+        cursor: pointer;
+        animation: pulse 2s infinite;
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.5);
+        color: white;
+    }
+    .skip-timer:hover.active { background: rgba(255, 255, 255, 0.3); transform: translateX(-50%) scale(1.05); }
+
+    .btn-centered { display: flex; justify-content: center; align-items: center; width: 100%; margin: 30px 0; text-align: center;}
+    .btn-centered button { margin: 0 auto; }
+
+    .heart-decoration {
+        position: fixed;
+        font-size: 30px;
+        opacity: 0.3;
+        pointer-events: none;
+        z-index: -1;
+        animation: float 4s ease-in-out infinite;
+    }
+
+    /* Final Gallery */
+    .final-gallery {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        z-index: 250;
+        overflow-y: auto;
+        padding: 80px 20px 100px;
+    }
+    .final-gallery::-webkit-scrollbar { width: 10px; }
+    .final-gallery::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); }
+    .final-gallery::-webkit-scrollbar-thumb { background: #ff1493; border-radius: 10px; }
+
+    .gallery-header { text-align: center; margin-bottom: 40px; }
+    .gallery-header h1 {
+        font-family: 'Press Start 2P';
+        font-size: clamp(18px, 4.5vw, 28px);
+        color: #ff1493;
+        text-shadow: 0 0 20px rgba(255, 20, 147, 0.8);
+        margin-bottom: 15px;
+        line-height: 1.8;
+    }
+    .gallery-header p { font-family: 'VT323'; font-size: clamp(14px, 3.5vw, 20px); color: rgba(255, 255, 255, 0.8); }
+
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(300px), 1fr));
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .gallery-item {
+        background: linear-gradient(135deg, rgba(255, 20, 147, 0.2), rgba(255, 105, 180, 0.15));
+        border: 3px solid #ff1493;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        animation: fadeInPulse 0.6s ease-out;
+    }
+    .gallery-item:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(255, 20, 147, 0.5); }
+
+    .gallery-media {
+        width: 100%;
+        aspect-ratio: 1/1;
+        background: #000;
+        overflow: hidden;
+        position: relative;
+    }
+    .gallery-media img, .gallery-media video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .gallery-media video { cursor: pointer; }
+
+    .play-indicator {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 60px;
+        height: 60px;
+        background: rgba(255, 20, 147, 0.8);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        color: white;
+        pointer-events: none;
+        transition: all 0.3s ease;
+    }
+    .gallery-media:hover .play-indicator { background: rgba(255, 20, 147, 1); transform: translate(-50%, -50%) scale(1.1); }
+    .gallery-caption { padding: 20px; color: white; font-family: 'VT323'; font-size: clamp(14px, 3.5vw, 18px); text-align: center; line-height: 1.6; }
+
+    /* CONTINUE BUTTON CENTERED */
+    .gallery-continue {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%); /* Centered */
+        background: linear-gradient(135deg, #ff1493, #ff69b4);
+        border: 3px solid white;
+        color: white;
+        padding: 15px 40px;
+        font-family: 'Press Start 2P';
+        font-size: clamp(10px, 2.5vw, 14px);
+        cursor: pointer;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(255, 20, 147, 0.6);
+        animation: pulse 2s infinite;
+        z-index: 100;
+        white-space: nowrap;
+    }
+    .gallery-continue:hover { transform: translateX(-50%) translateY(-3px); box-shadow: 0 8px 25px rgba(255, 20, 147, 0.8); }
+
+    /* Final Screen */
+    .final-screen {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #ff1493 0%, #ff69b4 50%, #ffd700 100%);
+        background-size: 200% 200%;
+        animation: gradientShift 8s ease infinite;
+        z-index: 300;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 40px 20px;
+        overflow: hidden;
+    }
+
+    .final-message { text-align: center; color: white; animation: fadeInPulse 1.5s ease; max-width: 900px; }
+    .final-message h1 { font-family: 'Press Start 2P'; font-size: clamp(22px, 5.5vw, 40px); margin-bottom: 40px; text-shadow: 0 0 30px rgba(255, 255, 255, 0.8); line-height: 1.8; }
+    .final-message p { font-family: 'VT323'; font-size: clamp(20px, 4.5vw, 32px); margin: 25px 0; text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5); line-height: 1.6; }
+
+    .final-sprite-container { display: flex; gap: clamp(30px, 8vw, 60px); margin: 40px 0; align-items: center; justify-content: center; flex-wrap: wrap; }
+    .final-sprite { width: clamp(120px, 30vw, 200px); animation: float 3s ease-in-out infinite; filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.4)); }
+    .final-sprite:nth-child(2) { animation-delay: 0.5s; }
+    .final-heart { font-size: clamp(40px, 10vw, 80px); animation: heartBeat 1.2s infinite; margin: 0 clamp(10px, 3vw, 20px); }
+
+    .trivia-score { color: #ffd700; font-family: 'Press Start 2P'; font-size: clamp(10px, 2.5vw, 14px); margin: 20px 0; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+
+    @media (max-width: 600px) { .puzzle-grid { width: min(85vw, 350px); height: min(85vw, 350px); } }
+    @media (min-width: 1024px) { .date-card { font-size: 22px; } .date-card .label, .date-card .value { font-size: 20px; } }
+    @media (max-width: 600px) {.gallery-grid { grid-template-columns: 1fr; gap: 15px; padding: 10px;}}
+
+</style>
+
+<body>
+
+    <div class="audio-btn" onclick="toggleAudio()" id="audioBtn">🔇</div>
+    <div class="back-btn" onclick="goBackFromActivity()" id="backBtn">⬅️</div>
+
+    <audio id="bgMusic1">
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="bgMusic2">
+        <source src="music2.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="bgMusic3">
+        <source src="music3.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="videoScreen">
+        <div class="video-header">
+            <h1>💕 FOR ANGEL FAITH 💕</h1>
+            <p>A Valentine's Message Just For You</p>
+        </div>
+        <div class="video-container">
+            <video id="introVideo" playsinline preload="metadata">
+                <source src="intro.mp4" type="video/mp4">
+                Your browser does not support video playback.
+            </video>
+            <div class="play-overlay" id="playOverlay" onclick="playVideo()">
+                <div class="play-btn">▶</div>
+                <div class="play-text">TAP TO PLAY</div>
+            </div>
+        </div>
+        <div class="video-progress">
+            <button class="continue-after-video" id="continueBtn" onclick="continueToExperience()">
+                Continue ➜
+            </button>
+        </div>
+    </div>
+
+    <div id="introScreen">
+        <div class="big-heart" onclick="startExperience()">💖</div>
+        <p class="intro-text">TAP THE HEART<br>TO START</p>
+        <p style="color: rgba(255,255,255,0.5); margin-top: 15px; font-family: 'VT323'; font-size: clamp(10px, 2.5vw, 12px); text-align: center;">Something special awaits... 🔐💕</p>
+    </div>
+
+    <div class="bg-fixed"></div>
+    <div class="pixel-overlay"></div>
+
+    <div class="screen-wrapper" style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; position: fixed; top: 0; left: 0;">
+
+    <div class="heart-decoration" style="top: 10%; left: 5%;">💕</div>
+    <div class="heart-decoration" style="top: 20%; right: 8%; animation-delay: 1s;">💖</div>
+    <div class="heart-decoration" style="bottom: 15%; left: 10%; animation-delay: 2s;">💝</div>
+    <div class="heart-decoration" style="bottom: 25%; right: 5%; animation-delay: 1.5s;">💗</div>
+
+    <div class="photo-modal" id="photoModal">
+        <div class="close-gallery" onclick="closeGallery()" id="closeBtn">✕</div>
+        <div class="puzzle-container">
+            <div class="puzzle-grid" id="puzzleGrid"></div>
+        </div>
+        <div class="photo-caption" id="photoCaption">Tap two pieces to swap them</div>
+        <div class="puzzle-health" id="puzzleHealth">
+            <div class="health-heart">💖</div>
+            <div class="health-heart">💖</div>
+            <div class="health-heart">💖</div>
+            <span class="shuffle-counter" id="shuffleCounter">Shuffles: 3</span>
+        </div>
+        <div class="puzzle-controls">
+            <button class="puzzle-btn" onclick="shufflePuzzle()" id="shuffleBtn">🔀 Shuffle</button>
+            <button class="puzzle-btn" onclick="useReveal()" id="revealBtn">🔍 Reveal Piece</button>
+            <button class="puzzle-btn" onclick="nextPuzzle()" id="skipBtn" disabled>⏭️ Next</button>
+        </div>
+        <div class="puzzle-status" id="puzzleStatus"></div>
+    </div>
+
+    <div class="game-area" id="gameContainer"></div>
+    <div class="skip-timer" id="skipTimer">Complete at least 1 level to skip...</div>
+
+    <div class="main-container" id="mainUI">
+        <img src="hubie.gif" id="boySprite" class="pixel-sprite" alt="Boy Character"
+            onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22150%22%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2260%22 text-anchor=%22middle%22 dy=%22.3em%22%3E💙%3C/text%3E%3C/svg%3E'">
+        <div class="message-box" id="msgBox" onclick="handleInput()">
+            <div class="message-text" id="text">...</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+        </div>
+
+        <div class="date-card" id="dateCard">
+            <h2>💖 OUR VALENTINE'S DAY ITINERARY 💖</h2>
+
+            <span class="label">📍 WHERE WE FIRST MET:</span>
+            <span class="value">Jaro Cathedral - January 31st<br>Where I first saw you 💕</span>
+
+            <span class="label">💬 WHERE WE PROPERLY MET:</span>
+            <span class="value">Iloilo City Public Library<br>Where our story truly began 📚✨</span>
+
+            <span class="label">🐶 SHARED PASSION:</span>
+            <span class="value">Your love for animals inspires me every day 🐱🐰</span>
+
+            <span class="label">📸 MORNING (9:00 AM):</span>
+            <span class="value">SM City Mandurriao - Photo booth and tambay whatever cravings usto mo hehe💕</span>
+
+            <span class="label">🍽️ LUNCH (12:30 PM):</span>
+            <span class="value">Molo Mansion - Diri ta ma lunch! 😊</span>
+
+            <span class="label">🌅 SUNSET (5:00 PM):</span>
+            <span class="value">Festive Walk Parade ta ma sunset stroll or Ice cream date and PotCor liwat ^^🍦✨</span>
+
+            <span class="label">📅 DATE:</span>
+            <span class="value">February 14, 2026<br>I can't wait! 🥰</span>
+
+            <div style="margin-top: 30px; padding-top: 25px; border-top: 2px solid rgba(255,255,255,0.2);">
+                <span class="value"
+                    style="font-size: clamp(14px, 3.2vw, 18px); color: rgba(255,255,255,0.9); line-height: 1.8;">
+                    Take your time reading this... 💕<br>
+                    The final message will appear soon!
+                </span>
+            </div>
+        </div>
+
+        <div id="finalButtons">
+            <button class="yes-btn" onclick="handleYesClick(event)">YES! 💕</button>
+            <button class="no-btn" id="noBtn" onclick="handleNoClick(event)">No</button>
+        </div>
+    </div>
+
+    <div class="final-gallery" id="finalGallery">
+        <div class="gallery-header">
+            <h1>💕 Our Beautiful Moments 💕</h1>
+            <p>Before we end... let me show you some special memories</p>
+        </div>
+        <div class="gallery-grid" id="galleryGrid">
+            </div>
+        <button class="gallery-continue" onclick="showFinalScreen()">Continue to Final Message ➜</button>
+    </div>
+
+    <div class="final-screen" id="finalScreen">
+        <div class="final-message">
+            <h1>I can't wait to spend February 14th with you! 💕</h1>
+            <div class="final-sprite-container">
+                <img src="hubie.gif" class="final-sprite" alt="Me"
+                    onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2280%22 text-anchor=%22middle%22 dy=%22.3em%22%3E💙%3C/text%3E%3C/svg%3E'">
+                <div class="final-heart">💕</div>
+                <img src="angel.gif" class="final-sprite" alt="You"
+                    onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2280%22 text-anchor=%22middle%22 dy=%22.3em%22%3E💖%3C/text%3E%3C/svg%3E'">
+            </div>
+            <p style="margin-top: 40px; font-size: clamp(18px, 4vw, 28px);">
+                Thank you for saying yes! You've made me the happiest person alive! 🌹
+            </p>
+            <p style="margin-top: 20px; font-size: clamp(16px, 3.5vw, 24px);">
+                - Yubi 💖
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // ========== MEMORY MANAGEMENT ==========
+        class MemoryManager {
+            constructor() {
+                this.intervals = new Set();
+                this.timeouts = new Set();
+                this.eventListeners = [];
+                this.mediaElements = new Set();
+            }
+
+            registerInterval(interval) {
+                this.intervals.add(interval);
+                return interval;
+            }
+
+            registerTimeout(timeout) {
+                this.timeouts.add(timeout);
+                return timeout;
+            }
+
+            registerEventListener(element, event, handler, options) {
+                const listener = { element, event, handler, options };
+                element.addEventListener(event, handler, options);
+                this.eventListeners.push(listener);
+                return listener;
+            }
+
+            registerMediaElement(element) {
+                this.mediaElements.add(element);
+            }
+
+            clearInterval(interval) {
+                if (this.intervals.has(interval)) {
+                    clearInterval(interval);
+                    this.intervals.delete(interval);
+                }
+            }
+
+            clearTimeout(timeout) {
+                if (this.timeouts.has(timeout)) {
+                    clearTimeout(timeout);
+                    this.timeouts.delete(timeout);
+                }
+            }
+
+            clearAllIntervals() {
+                this.intervals.forEach(interval => clearInterval(interval));
+                this.intervals.clear();
+            }
+
+            clearAllTimeouts() {
+                this.timeouts.forEach(timeout => clearTimeout(timeout));
+                this.timeouts.clear();
+            }
+
+            clearAllEventListeners() {
+                this.eventListeners.forEach(({ element, event, handler, options }) => {
+                    element.removeEventListener(event, handler, options);
+                });
+                this.eventListeners = [];
+            }
+
+            pauseAllMedia() {
+                this.mediaElements.forEach(element => {
+                    if (element && !element.paused) {
+                        element.pause();
+                    }
+                });
+            }
+
+            cleanupAll() {
+                this.clearAllIntervals();
+                this.clearAllTimeouts();
+                this.clearAllEventListeners();
+                this.pauseAllMedia();
+            }
+        }
+
+        const memoryManager = new MemoryManager();
+
+        // ========== SPRITE EMOTION SYSTEM ==========
+        const spriteFiles = {
+            boy: {
+                'Normal': 'boy_Normal.png',
+                'Happy': 'boy_Happy.png',
+                'Sad': 'boy_Sad.png',
+                'Crying': 'boy_Crying.png',
+                'Angry': 'boy_Angry.png',
+                'Surprised': 'boy_Surprised.png',
+                'Laughing': 'boy_Laughing.png',
+                'Confused': 'boy_Confused.png',
+                'Blushing': 'boy_Blushing.png',
+                'Winking': 'boy_Winking.png',
+                'Shy': 'boy_Shy.png',
+                'ThumbsUp': 'boy_ThumbsUp.png'
+            }
+        };
+
+        function changeBoySprite(emotion) {
+            const sprite = document.getElementById('boySprite');
+            const emotionFile = spriteFiles.boy[emotion];
+
+            if (emotionFile) {
+                sprite.style.opacity = '0';
+                const timeout = memoryManager.registerTimeout(setTimeout(() => {
+                    const img = new Image();
+                    img.onload = () => {
+                        sprite.src = emotionFile;
+                        sprite.style.opacity = '1';
+                    };
+                    img.onerror = () => {
+                        sprite.src = 'hubie.gif';
+                        sprite.style.opacity = '1';
+                    };
+                    img.src = emotionFile;
+                }, 150));
+            }
+        }
+
+        // ========== GLOBAL VARIABLES ==========
+        let userLoveLanguage = null;
+        let audioPlaying = false;
+        let currentMusicTrack = 0;
+        let musicTracks = [];
+        let introVideo = null;
+        let videoPlaying = false;
+        let skipTimerInterval = null;
+        let skipTimeElapsed = 0;
+
+        const PACING = {
+            FAST: 400,
+            NORMAL: 600,
+            SLOW: 1000
+        };
+
+        let savedStepBeforeActivity = -1;
+        let activityLevelCompleted = 0;
+
+        // ========== MUSIC SYSTEM - IMPROVED ==========
+        function initializeMusicTracks() {
+            musicTracks = [
+                document.getElementById('bgMusic1'),
+                document.getElementById('bgMusic2'),
+                document.getElementById('bgMusic3')
+            ].filter(track => track !== null);
+
+            musicTracks.forEach(track => {
+                memoryManager.registerMediaElement(track);
+                track.volume = 0.5; // Set volume to 50%
+
+                memoryManager.registerEventListener(track, 'ended', () => {
+                    playNextTrack();
+                });
+
+                memoryManager.registerEventListener(track, 'error', (e) => {
+                    console.log('Music track failed to load:', e);
+                    playNextTrack();
+                });
+            });
+        }
+
+        function playNextTrack() {
+            if (musicTracks.length === 0) return;
+
+            const currentTrack = musicTracks[currentMusicTrack];
+            if (currentTrack) {
+                currentTrack.pause();
+                currentTrack.currentTime = 0;
+            }
+
+            currentMusicTrack = (currentMusicTrack + 1) % musicTracks.length;
+            const nextTrack = musicTracks[currentMusicTrack];
+
+            if (nextTrack && audioPlaying) {
+                const playPromise = nextTrack.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(e => {
+                        console.log('Next track play failed:', e);
+                        playNextTrack();
+                    });
+                }
+            }
+        }
+
+        function getCurrentMusicTrack() {
+            return musicTracks[currentMusicTrack];
+        }
+
+        // ========== INITIALIZATION ==========
+        window.addEventListener('DOMContentLoaded', function () {
+            initializeMusicTracks();
+            introVideo = document.getElementById('introVideo');
+            memoryManager.registerMediaElement(introVideo);
+
+            if (introVideo) {
+                memoryManager.registerEventListener(introVideo, 'ended', () => {
+                    document.getElementById('continueBtn').style.display = 'block';
+                });
+
+                memoryManager.registerEventListener(introVideo, 'play', () => {
+                    if (audioPlaying) {
+                        const currentTrack = getCurrentMusicTrack();
+                        if (currentTrack) currentTrack.pause();
+                    }
+                });
+
+                memoryManager.registerEventListener(introVideo, 'error', (e) => {
+                    console.log('Video load error:', e);
+                    document.getElementById('playOverlay').innerHTML = `
+                        <div class="play-text">Video unavailable<br>Tap to skip</div>
+                    `;
+                    document.getElementById('playOverlay').onclick = continueToExperience;
+                });
+            }
+
+            // Prevent accidental browser back
+            history.pushState(null, null, location.href);
+            memoryManager.registerEventListener(window, 'popstate', function () {
+                history.go(1);
+            });
+        });
+
+        // ========== VIDEO CONTROLS =====
+        function playVideo() {
+            const video = document.getElementById('introVideo');
+            const overlay = document.getElementById('playOverlay');
+
+            overlay.classList.add('hidden');
+
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log('Video play failed:', error);
+                    continueToExperience();
+                });
+            }
+
+            videoPlaying = true;
+        }
+
+        function continueToExperience() {
+            const videoScreen = document.getElementById('videoScreen');
+            const introScreen = document.getElementById('introScreen');
+
+            videoScreen.style.transition = 'opacity 0.8s ease';
+            videoScreen.style.opacity = '0';
+            videoScreen.style.pointerEvents = 'none';
+
+            const timeout1 = memoryManager.registerTimeout(setTimeout(() => {
+                videoScreen.style.display = 'none';
+                introScreen.style.display = 'flex';
+                introScreen.style.opacity = '0';
+                introScreen.style.transition = 'opacity 0.8s ease';
+                introScreen.style.pointerEvents = 'auto';
+
+                const timeout2 = memoryManager.registerTimeout(setTimeout(() => {
+                    introScreen.style.opacity = '1';
+                }, 50));
+            }, 800));
+        }
+
+        // ========== AUDIO CONTROL =====
+        function toggleAudio() {
+            const btn = document.getElementById('audioBtn');
+            const currentTrack = getCurrentMusicTrack();
+
+            if (!currentTrack) {
+                btn.style.display = 'none';
+                return;
+            }
+
+            if (audioPlaying) {
+                currentTrack.pause();
+                btn.innerHTML = '🔇';
+                audioPlaying = false;
+            } else {
+                const playPromise = currentTrack.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        btn.innerHTML = '🔊';
+                        audioPlaying = true;
+                    }).catch(error => {
+                        console.log('Audio play failed:', error);
+                    });
+                }
+            }
+        }
+
+        // ========== BACK BUTTON FUNCTIONALITY ==========
+        function showBackButton() {
+            document.getElementById('backBtn').style.display = 'flex';
+        }
+
+        function hideBackButton() {
+            document.getElementById('backBtn').style.display = 'none';
+        }
+
+        function goBackFromActivity() {
+            memoryManager.cleanupAll();
+
+            const gameContainer = document.getElementById('gameContainer');
+            const photoModal = document.getElementById('photoModal');
+            const skipTimer = document.getElementById('skipTimer');
+
+            gameContainer.style.display = 'none';
+            photoModal.style.display = 'none';
+            skipTimer.style.display = 'flex';
+            hideBackButton();
+
+            gameActive = false;
+            activityLevelCompleted = 0;
+
+            if (savedStepBeforeActivity >= 0) {
+                currentStep = savedStepBeforeActivity - 1;
+                savedStepBeforeActivity = -1;
+                const timeout = memoryManager.registerTimeout(setTimeout(nextStep, 300));
+            }
+        }
+
+        // ========== SKIP TIMER SYSTEM ==========
+        function startSkipTimer(callback) {
+            skipTimeElapsed = 0;
+            activityLevelCompleted = 0;
+            const skipTimer = document.getElementById('skipTimer');
+            skipTimer.style.display = 'flex';
+            skipTimer.classList.remove('active');
+            skipTimer.innerHTML = 'Complete at least 1 level to skip (10s timer)...';
+            skipTimer.onclick = null;
+
+            skipTimerInterval = memoryManager.registerInterval(setInterval(() => {
+                skipTimeElapsed++;
+                const remaining = 10 - skipTimeElapsed;
+
+                if (remaining > 0) {
+                    if (activityLevelCompleted > 0) {
+                        skipTimer.innerHTML = `⏭️ Skip available! Click to skip (${remaining}s)`;
+                        skipTimer.classList.add('active');
+                        skipTimer.onclick = () => {
+                            memoryManager.clearInterval(skipTimerInterval);
+                            skipTimer.style.display = 'flex';
+                            callback();
+                        };
+                    } else {
+                        skipTimer.innerHTML = `Complete 1 level first (${remaining}s)...`;
+                        skipTimer.classList.remove('active');
+                        skipTimer.onclick = null;
+                    }
+                } else {
+                    if (activityLevelCompleted > 0) {
+                        skipTimer.innerHTML = '⏭️ Click to Skip Activity';
+                        skipTimer.classList.add('active');
+                        skipTimer.onclick = () => {
+                            memoryManager.clearInterval(skipTimerInterval);
+                            skipTimer.style.display = 'flex';
+                            callback();
+                        };
+                    } else {
+                        skipTimer.innerHTML = 'Complete at least 1 level to enable skip';
+                        skipTimer.classList.remove('active');
+                    }
+                    memoryManager.clearInterval(skipTimerInterval);
+                }
+            }, 1000));
+        }
+
+        function stopSkipTimer() {
+            if (skipTimerInterval) {
+                memoryManager.clearInterval(skipTimerInterval);
+                skipTimerInterval = null;
+            }
+            document.getElementById('skipTimer').style.display = 'none';
+        }
+
+        // ========== PUZZLE GALLERY =====
+        const photoGallery = [
+            {
+                src: "photo1.JPG",
+                caption: "January 31st at Iloilo City Public Library - When we first met 🐾"
+            },
+            {
+                src: "photo2.png",
+                caption: "Our first ice cream date ^^ 🍦"
+            },
+            {
+                src: "photo3.png",
+                caption: "My favorite moment with you ><💖"
+            }
+        ];
+
+        photoGallery.forEach(item => {
+    const img = new Image();
+    img.src = item.src;
+});
+
+        let currentPhotoIndex = 0;
+        let puzzlePieces = [];
+        let selectedPiece = null;
+        let moveCount = 0;
+        let solvedPuzzles = new Set();
+        let revealsRemaining = 3;
+        let shufflesRemaining = 3;
+
+        function openGallery() {
+            savedStepBeforeActivity = currentStep;
+            currentPhotoIndex = 0;
+            revealsRemaining = 3;
+            shufflesRemaining = 3;
+            solvedPuzzles.clear();
+            activityLevelCompleted = 0;
+            createPuzzle();
+            updateCloseButton();
+            updateHealthDisplay();
+            updateShuffleCounter();
+            document.getElementById('photoModal').style.display = 'flex';
+            showBackButton();
+            changeBoySprite('Surprised');
+        }
+
+        function closeGallery() {
+            if (solvedPuzzles.size === photoGallery.length) {
+                document.getElementById('photoModal').style.display = 'none';
+                hideBackButton();
+                changeBoySprite('Happy');
+                savedStepBeforeActivity = -1;
+                const timeout = memoryManager.registerTimeout(setTimeout(nextStep, 500));
+            } else {
+                const closeBtn = document.getElementById('closeBtn');
+                closeBtn.classList.add('disabled');
+                const timeout = memoryManager.registerTimeout(setTimeout(() => closeBtn.classList.remove('disabled'), 500));
+            }
+        }
+
+        function updateCloseButton() {
+            const closeBtn = document.getElementById('closeBtn');
+            if (solvedPuzzles.size === photoGallery.length) {
+                closeBtn.classList.remove('disabled');
+                closeBtn.title = 'All puzzles solved! Click to continue';
+            } else {
+                closeBtn.classList.add('disabled');
+                closeBtn.title = `Solve ${photoGallery.length - solvedPuzzles.size} more puzzle(s) to continue`;
+            }
+        }
+
+        function updateHealthDisplay() {
+            const hearts = document.querySelectorAll('.health-heart');
+            hearts.forEach((heart, index) => {
+                if (index < revealsRemaining) {
+                    heart.classList.remove('lost');
+                } else {
+                    heart.classList.add('lost');
+                }
+            });
+
+            document.getElementById('revealBtn').disabled = revealsRemaining <= 0;
+            document.getElementById('revealBtn').innerText = `🔍 Reveal (${revealsRemaining})`;
+        }
+
+        function updateShuffleCounter() {
+            const shuffleBtn = document.getElementById('shuffleBtn');
+            const shuffleCounter = document.getElementById('shuffleCounter');
+
+            shuffleCounter.innerText = `Shuffles: ${shufflesRemaining}`;
+            shuffleBtn.disabled = shufflesRemaining <= 0 || solvedPuzzles.has(currentPhotoIndex);
+
+            if (shufflesRemaining <= 0) {
+                shuffleBtn.innerText = '🔀 No Shuffles Left';
+            } else {
+                shuffleBtn.innerText = `🔀 Shuffle (${shufflesRemaining})`;
+            }
+        }
+
+        function useReveal() {
+            if (revealsRemaining <= 0) return;
+
+            const incorrectPieces = puzzlePieces.filter(p =>
+                !p.classList.contains('correct') &&
+                parseInt(p.dataset.index) !== parseInt(p.dataset.correctIndex)
+            );
+
+            if (incorrectPieces.length > 0) {
+                const randomPiece = incorrectPieces[Math.floor(Math.random() * incorrectPieces.length)];
+                const targetIndex = parseInt(randomPiece.dataset.correctIndex);
+
+                const targetPiece = puzzlePieces.find(p => parseInt(p.dataset.index) === targetIndex);
+
+                if (targetPiece) {
+                    swapPieces(randomPiece, targetPiece);
+
+                    randomPiece.style.boxShadow = '0 0 30px rgba(255,215,0,0.9)';
+                    const timeout = memoryManager.registerTimeout(setTimeout(() => randomPiece.style.boxShadow = '', 1000));
+
+                    revealsRemaining--;
+                    updateHealthDisplay();
+                    moveCount++;
+                    updatePuzzleStatus();
+
+                    const timeout2 = memoryManager.registerTimeout(setTimeout(() => checkIfSolved(), 300));
+                }
+            }
+        }
+
+        function createPuzzle() {
+            const photo = photoGallery[currentPhotoIndex];
+            const grid = document.getElementById('puzzleGrid');
+            grid.innerHTML = '';
+            puzzlePieces = [];
+            selectedPiece = null;
+            moveCount = 0;
+
+            document.getElementById('photoCaption').innerText = photo.caption;
+            updatePuzzleStatus();
+            updateHealthDisplay();
+            updateShuffleCounter();
+
+            if (solvedPuzzles.has(currentPhotoIndex)) {
+                for (let i = 0; i < 9; i++) {
+                    const piece = createPuzzlePiece(i, i, photo.src);
+                    piece.classList.add('correct');
+                    grid.appendChild(piece);
+                    puzzlePieces.push(piece);
+                }
+                document.getElementById('skipBtn').disabled = false;
+            } else {
+                const indices = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+                const shuffled = [...indices].sort(() => Math.random() - 0.5);
+
+                for (let i = 0; i < 9; i++) {
+                    const piece = createPuzzlePiece(i, shuffled[i], photo.src);
+                    piece.onclick = () => selectPiece(piece);
+                    grid.appendChild(piece);
+                    puzzlePieces.push(piece);
+                }
+                document.getElementById('skipBtn').disabled = true;
+            }
+
+            checkIfSolved();
+        }
+
+        function createPuzzlePiece(gridIndex, imageIndex, imageSrc) {
+            const piece = document.createElement('div');
+            piece.className = 'puzzle-piece';
+            piece.dataset.index = gridIndex;
+            piece.dataset.correctIndex = imageIndex;
+
+            const row = imageIndex % 3;
+            const col = Math.floor(imageIndex / 3);
+            piece.style.backgroundImage = `url('${imageSrc}')`;
+            piece.style.backgroundPosition = `${row * 50}% ${col * 50}%`;
+
+            return piece;
+        }
+
+        function updatePuzzleStatus() {
+            document.getElementById('puzzleStatus').innerText =
+                `Photo ${currentPhotoIndex + 1}/${photoGallery.length} | Moves: ${moveCount} | Solved: ${solvedPuzzles.size}/${photoGallery.length}`;
+        }
+
+        function selectPiece(piece) {
+            if (piece.classList.contains('correct')) return;
+
+            if (selectedPiece === null) {
+                selectedPiece = piece;
+                piece.classList.add('selected');
+            } else if (selectedPiece === piece) {
+                piece.classList.remove('selected');
+                selectedPiece = null;
+            } else {
+                swapPieces(selectedPiece, piece);
+                selectedPiece.classList.remove('selected');
+                selectedPiece = null;
+                moveCount++;
+                updatePuzzleStatus();
+
+                const timeout = memoryManager.registerTimeout(setTimeout(() => checkIfSolved(), 300));
+            }
+        }
+
+        function swapPieces(piece1, piece2) {
+            const tempBg = piece1.style.backgroundPosition;
+            piece1.style.backgroundPosition = piece2.style.backgroundPosition;
+            piece2.style.backgroundPosition = tempBg;
+
+            const tempCorrect = piece1.dataset.correctIndex;
+            piece1.dataset.correctIndex = piece2.dataset.correctIndex;
+            piece2.dataset.correctIndex = tempCorrect;
+        }
+
+        function checkIfSolved() {
+            let solved = true;
+            for (let piece of puzzlePieces) {
+                if (parseInt(piece.dataset.index) !== parseInt(piece.dataset.correctIndex)) {
+                    solved = false;
+                    break;
+                }
+            }
+
+            if (solved && !solvedPuzzles.has(currentPhotoIndex)) {
+                solvedPuzzles.add(currentPhotoIndex);
+                activityLevelCompleted++;
+                puzzlePieces.forEach(piece => {
+                    piece.classList.add('correct');
+                    piece.onclick = null;
+                });
+                updateCloseButton();
+                updateShuffleCounter();
+                document.getElementById('skipBtn').disabled = false;
+                changeBoySprite('ThumbsUp');
+            }
+        }
+
+        function shufflePuzzle() {
+            if (shufflesRemaining <= 0 || solvedPuzzles.has(currentPhotoIndex)) return;
+
+            const incorrectPieces = puzzlePieces.filter(p => !p.classList.contains('correct'));
+
+            for (let i = incorrectPieces.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                swapPieces(incorrectPieces[i], incorrectPieces[j]);
+            }
+
+            shufflesRemaining--;
+            moveCount++;
+            updatePuzzleStatus();
+            updateShuffleCounter();
+
+            if (shufflesRemaining === 0 && revealsRemaining > 0) {
+                revealsRemaining--;
+                updateHealthDisplay();
+
+                const area = document.getElementById('photoModal');
+                const warning = document.createElement('div');
+                warning.style.cssText = `
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: rgba(255, 0, 0, 0.9);
+                    color: white;
+                    padding: 20px;
+                    border-radius: 10px;
+                    font-family: 'Press Start 2P';
+                    font-size: 12px;
+                    text-align: center;
+                    z-index: 1000;
+                    animation: shake 0.5s ease;
+                `;
+                warning.innerHTML = 'No more shuffles!<br>Lost a reveal! 💔';
+                area.appendChild(warning);
+
+                const timeout = memoryManager.registerTimeout(setTimeout(() => warning.remove(), 2000));
+            }
+
+            checkIfSolved();
+        }
+
+        function nextPuzzle() {
+            currentPhotoIndex++;
+            if (currentPhotoIndex < photoGallery.length) {
+                createPuzzle();
+            } else {
+                closeGallery();
+            }
+        }
+
+        // ========== STORY & PROGRESSION =====
+        const story = [
+            { text: "Hi Angel... I've been thinking about how to ask you this Valentines Day. 💕", emotion: 'Shy' },
+            { text: "So I made this whole website just for you!", emotion: 'Happy' },
+            { text: "Let me show you some of our best memories... but there's a twist!", emotion: 'Winking' },
+            "PHOTO_PUZZLE",
+            { text: "These moments mean everything to me 💖", emotion: 'Blushing' },
+            { text: "Now, let me share something fun...", emotion: 'Normal' },
+            { text: "Activity 1: Unscramble My Love Messages! ✨", emotion: 'Surprised' },
+            "WORD_SCRAMBLE",
+            { text: "Activity 2: Complete the Love Quotes! 💭", emotion: 'Happy' },
+            "LOVE_QUOTES",
+            { text: "Activity 3: Let's discover your Love Language! 💬", emotion: 'Normal' },
+            "LOVE_LANGUAGE_QUIZ",
+            { text: "You're so perfectly you! 😊", emotion: 'Blushing' },
+            { text: "Activity 4: Would You Rather...? 🤔", emotion: 'Confused' },
+            "WOULD_YOU_RATHER",
+            { text: "I love learning more about you! 💕", emotion: 'Happy' },
+            { text: "Activity 5: Valentine's Trivia! 🧠", emotion: 'Winking' },
+            "TRIVIA_GAME",
+            { text: "You're so smart! Amazing! 💖", emotion: 'Surprised' },
+            { text: "Activity 6: How well do you know us? 📝", emotion: 'Confused' },
+            "MEMORY_QUIZ",
+            { text: "You remember everything! Amazing! 💖", emotion: 'Surprised' },
+            { text: "Activity 7: Our future together 🌟", emotion: 'Happy' },
+            "FUTURE_DREAMS",
+            { text: "I can't wait to make these dreams come true with you ✨", emotion: 'Blushing' },
+            { text: "Now... there's just one question left...", emotion: 'Shy' },
+            { text: "Angel Faith... Can I be your Valentine? 💕", emotion: 'Blushing' }
+        ];
+
+        let currentStep = -1;
+        let isTyping = false;
+        let gameActive = false;
+        let typewriterInterval = null;
+
+        function updateProgress() {
+            const progress = ((currentStep + 1) / story.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function startExperience() {
+            const introScreen = document.getElementById('introScreen');
+            introScreen.style.opacity = '0';
+            introScreen.style.transition = 'opacity 1s ease';
+
+            const timeout = memoryManager.registerTimeout(setTimeout(() => {
+                introScreen.style.display = 'none';
+                document.getElementById('mainUI').style.display = 'flex';
+
+                const currentTrack = getCurrentMusicTrack();
+                if (!audioPlaying && currentTrack) {
+                    const playPromise = currentTrack.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            document.getElementById('audioBtn').innerHTML = '🔊';
+                            audioPlaying = true;
+                        }).catch(e => console.log('Audio autoplay blocked'));
+                    }
+                }
+
+                changeBoySprite('Happy');
+                nextStep();
+            }, PACING.SLOW));
+        }
+
+        function typeWriter(txt) {
+            if (typewriterInterval) {
+                memoryManager.clearInterval(typewriterInterval);
+                typewriterInterval = null;
+            }
+
+            isTyping = true;
+            let i = 0;
+            const el = document.getElementById('text');
+            el.innerHTML = "";
+
+            typewriterInterval = memoryManager.registerInterval(setInterval(() => {
+                if (i < txt.length) {
+                    el.innerHTML += txt.charAt(i);
+                    i++;
+                } else {
+                    memoryManager.clearInterval(typewriterInterval);
+                    typewriterInterval = null;
+                    isTyping = false;
+                }
+            }, 40));
+        }
+
+        function handleInput() {
+            if (isTyping || gameActive || currentStep >= story.length - 1) return;
+            nextStep();
+        }
+
+        function nextStep() {
+            currentStep++;
+            if (currentStep >= story.length) return;
+
+            updateProgress();
+            const line = story[currentStep];
+
+            if (typeof line === 'object' && line.text) {
+                if (line.emotion) {
+                    changeBoySprite(line.emotion);
+                }
+                typeWriter(line.text);
+
+                if (currentStep === story.length - 1) {
+                    const timeout = memoryManager.registerTimeout(setTimeout(() => {
+                        document.getElementById('finalButtons').style.display = 'flex';
+                    }, line.text.length * 40 + 500));
+                }
+            }
+            else if (line === "PHOTO_PUZZLE") openGallery();
+            else if (line === "WORD_SCRAMBLE") startWordScramble();
+            else if (line === "LOVE_QUOTES") startLoveQuotes();
+            else if (line === "LOVE_LANGUAGE_QUIZ") startLoveLanguageQuiz();
+            else if (line === "WOULD_YOU_RATHER") startWouldYouRather();
+            else if (line === "TRIVIA_GAME") startTriviaGame();
+            else if (line === "MEMORY_QUIZ") startMemoryQuiz();
+            else if (line === "FUTURE_DREAMS") showFutureDreams();
+        }
+
+        // ========== ACTIVITY 1: WORD SCRAMBLE =====
+        function startWordScramble() {
+            gameActive = true;
+            savedStepBeforeActivity = currentStep;
+            activityLevelCompleted = 0;
+            const area = document.getElementById('gameContainer');
+            area.style.display = 'flex';
+            showBackButton();
+
+            changeBoySprite('Confused');
+
+            startSkipTimer(() => {
+                stopSkipTimer();
+                gameActive = false;
+                area.style.display = 'none';
+                hideBackButton();
+                changeBoySprite('Normal');
+                savedStepBeforeActivity = -1;
+                const timeout = memoryManager.registerTimeout(setTimeout(nextStep, PACING.NORMAL));
+            });
+
+            const messages = [
+                { scrambled: "IBUDT", answer: "BUDIT", hint: "Your adorable nickname! 🥰" },
+                { scrambled: "NAP NAP", answer: "PAN PAN", hint: "Your sweet dog! 🐕" },
+                { scrambled: "YOM YOM", answer: "MOY MOY", hint: "Another furry friend! 🐶" },
+                { scrambled: "ETPRFCE", answer: "PERFECT", hint: "What I think of you! YES YOU ARE BERIII PERFECT! 🌟" },
+                { scrambled: "ENINSHUS", answer: "SUNSHINE", hint: "You brighten my days! ☀️ U R MAH SUNSHINE MAH ONLEH SUNSHINE!" },
+                { scrambled: "I LOEV OYU", answer: "I LOVE YOU", hint: "Three magic words 💕" },
+                { scrambled: "CAN I BE YOUR VALENTINE?", answer: "YES", hint: "The big question! 💌 Yes or No? 🥺👉👈" }
+            ];
+
+            let currentMsg = 0;
+
+            function showScramble() {
+                const msg = messages[currentMsg];
+                area.innerHTML = `
+                    <div class="game-instruction">Unscramble My Message! 💌</div>
+                    <div class="scramble-container">
+                        <div class="scramble-word">
+                            <div style="font-family: 'VT323'; font-size: clamp(12px, 3vw, 16px); color: rgba(255,255,255,0.7); margin-bottom: 10px;">
+                                💡 Hint: ${msg.hint}
+                            </div>
+                            <div class="scrambled-text">${msg.scrambled}</div>
+                            <input type="text" class="unscramble-input" id="unscrambleInput" placeholder="Type your answer..." autocomplete="off">
+                            <div style="font-family: 'VT323'; font-size: clamp(12px, 3vw, 16px); color: rgba(255,255,255,0.5); margin-top: 10px;">
+                                Message ${currentMsg + 1} of ${messages.length}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                const input = document.getElementById('unscrambleInput');
+                input.focus();
+
+                memoryManager.registerEventListener(input, 'focus', () => {
+                    const timeout = memoryManager.registerTimeout(setTimeout(() =>
+                        input.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300));
+                });
+
+                const checkAnswer = function (e) {
+                    if (e.key === 'Enter' || this.value.toUpperCase().replace(/\s/g, '') === msg.answer.replace(/\s/g, '')) {
+                        const userAnswer = this.value.toUpperCase().replace(/\s/g, '');
+                        const correctAnswer = msg.answer.replace(/\s/g, '');
+
+                        if (userAnswer === correctAnswer) {
+                            this.style.borderColor = '#00ff00';
+                            this.style.boxShadow = '0 0 20px rgba(0,255,0,0.8)';
+
+                            changeBoySprite('Happy');
+
+                            if (currentMsg === 0) activityLevelCompleted++;
+
+                            area.innerHTML = `
+                                <div class="game-instruction">✨ "${msg.answer}" ✨</div>
+                                <div style="color: #00ff00; font-family: 'VT323'; font-size: clamp(16px, 4vw, 24px); text-align: center; margin: 20px; text-shadow: 0 0 10px rgba(0,255,0,0.5);">
+                                    YAYYYY! 💕
+                                </div>
+                            `;
+
+                            const timeout = memoryManager.registerTimeout(setTimeout(() => {
+                                currentMsg++;
+                                if (currentMsg < messages.length) {
+                                    changeBoySprite('Confused');
+                                    showScramble();
+                                } else {
+                                    changeBoySprite('Laughing');
+                                    stopSkipTimer();
+                                    gameActive = false;
+                                    area.style.display = 'none';
+                                    hideBackButton();
+                                    savedStepBeforeActivity = -1;
+                                    const timeout2 = memoryManager.registerTimeout(setTimeout(nextStep, PACING.NORMAL));
+                                }
+                            }, 1500));
+                        }
+                    }
+                };
+
+                memoryManager.registerEventListener(input, 'keyup', checkAnswer);
+            }
+
+            showScramble();
+        }
+
+        // ========== ACTIVITY 2: LOVE QUOTES =====
+        function startLoveQuotes() {
+            // Similar structure with memory management
+            gameActive = true;
+            savedStepBeforeActivity = currentStep;
+            activityLevelCompleted = 0;
+            const area = document.getElementById('gameContainer');
+            area.style.display = 'flex';
+            showBackButton();
+            changeBoySprite('Normal');
+
+            startSkipTimer(() => {
+                stopSkipTimer();
+                gameActive = false;
+                area.style.display = 'none';
+                hideBackButton();
+                changeBoySprite('Normal');
+                savedStepBeforeActivity = -1;
+                memoryManager.registerTimeout(setTimeout(nextStep, PACING.NORMAL));
+            });
+
+            const quotes = [
+                {
+                    text: "You are the ___ to my heart",
+                    options: ["key 🔑", "lock 🔒", "door 🚪", "window 🪟"],
+                    correct: 0
+                },
+                {
+                    text: "Every moment with you is like a ___",
+                    options: ["game 🎮","movie 🎬", "nightmare 👻", "dream come true 💫"],
+                    correct: 3
+                },
+                {
+                    text: "You make my heart ___",
+                    options: ["stop 🛑", "break 💔", "freeze ❄️", "skip a beat 💓"],
+                    correct: 3
+                }
+            ];
+
+            let currentQ = 0;
+
+            function showQuote() {
+                const quote = quotes[currentQ];
+                const choicesHTML = quote.options.map((opt, i) =>
+                    `<div class="choice-btn" data-index="${i}">${opt}</div>`
+                ).join('');
+
+                area.innerHTML = `
+                    <div class="game-instruction">Complete the Love Quote! 💭</div>
+                    <div style="color: white; font-family: 'VT323'; font-size: clamp(18px, 4.5vw, 26px); text-align: center; margin: 30px 20px; line-height: 1.6;">
+                        "${quote.text}"
+                    </div>
+                    <div class="choice-container">${choicesHTML}</div>
+                    <div style="color: rgba(255,255,255,0.5); font-family: 'VT323'; font-size: clamp(12px, 3vw, 16px); text-align: center; margin-top: 20px;">
+                        Quote ${currentQ + 1} of ${quotes.length}
+                    </div>
+                `;
+
+                const btns = area.querySelectorAll('.choice-btn');
+                btns.forEach(btn => {
+                    memoryManager.registerEventListener(btn, 'click', function () {
+                        const index = parseInt(this.dataset.index);
+                        if (index === quote.correct) {
+                            this.classList.add('correct');
+                            changeBoySprite('Happy');
+
+                            if (currentQ === 0) activityLevelCompleted++;
+
+                            memoryManager.registerTimeout(setTimeout(() => {
+                                currentQ++;
+                                if (currentQ < quotes.length) {
+                                    changeBoySprite('Normal');
+                                    showQuote();
+                                } else {
+                                    changeBoySprite('Blushing');
+                                    stopSkipTimer();
+                                    gameActive = false;
+                                    area.style.display = 'none';
+                                    hideBackButton();
+                                    savedStepBeforeActivity = -1;
+                                    memoryManager.registerTimeout(setTimeout(nextStep, PACING.NORMAL));
+                                }
+                            }, PACING.NORMAL));
+                        } else {
+                            this.classList.add('incorrect');
+                            changeBoySprite('Sad');
+                            memoryManager.registerTimeout(setTimeout(() => {
+                                this.classList.remove('incorrect');
+                                changeBoySprite('Normal');
+                            }, 500));
+                        }
+                    });
+                });
+            }
+
+            showQuote();
+        }
+
+
+        // ========== ACTIVITY 3: LOVE LANGUAGE QUIZ =====
+        function startLoveLanguageQuiz() {
+            gameActive = true;
+            savedStepBeforeActivity = currentStep;
+            activityLevelCompleted = 0;
+            const area = document.getElementById('gameContainer');
+            area.style.display = 'flex';
+            showBackButton();
+
+            changeBoySprite('Normal');
+
+            startSkipTimer(() => {
+                userLoveLanguage = 'words_of_affirmation';
+                stopSkipTimer();
+                gameActive = false;
+                area.style.display = 'none';
+                hideBackButton();
+                changeBoySprite('Normal');
+                savedStepBeforeActivity = -1;
+                memoryManager.registerTimeout(setTimeout(nextStep, PACING.NORMAL));
+            });
+
+            const questions = [
+                {
+                    q: "What's your favorite way to spend time with me?",
+                    answers: [
+                        "💬 Deep conversations and laughs",
+                        "🤗 Physical affection & cuddles",
+                        "🎁 Thoughtful surprises",
+                        "⏰ Quality time doing things together"
+                    ]
+                },
+                {
+                    q: "How do I make you feel loved on Valentine's Day?",
+                    answers: [
+                        "💌 Sweet words and compliments",
+                        "💝 Gifts and surprises",
+                        "🎭 Acts of service and help",
+                        "👀 Giving you undivided attention"
+                    ]
+                }
+            ];
+
+            let currentQ = 0;
+            const responses = [];
+
+            function showQuestion() {
+                const quiz = questions[currentQ];
+                const answersHTML = quiz.answers.map((ans, i) =>
+                    `<div class="choice-btn" data-index="${i}">${ans}</div>`
+                ).join('');
+
+                area.innerHTML = `
+            <div class="game-instruction">${quiz.q}</div>
+            <div class="choice-container">${answersHTML}</div>
+            <div style="color: rgba(255,255,255,0.5); font-family: 'VT323'; font-size: clamp(12px, 3vw, 16px); text-align: center; margin-top: 20px;">
+                Question ${currentQ + 1} of ${questions.length}
+            </div>
+        `;
+
+                const btns = area.querySelectorAll('.choice-btn');
+                btns.forEach(btn => {
+                    memoryManager.registerEventListener(btn, 'click', function () {
+                        const index = parseInt(this.dataset.index);
+                        selectLoveLanguage(index);
+                    });
+                });
+            }
+
+            function selectLoveLanguage(index) {
+                responses.push(index);
+                const btns = document.querySelectorAll('.choice-btn');
+                btns[index].classList.add('correct');
+
+                if (currentQ === 0) activityLevelCompleted++;
+
+                memoryManager.registerTimeout(setTimeout(() => {
+                    currentQ++;
+                    if (currentQ < questions.length) {
+                        showQuestion();
+                    } else {
+                        const q1 = responses[0];
+                        const q2 = responses[1];
+
+                        const languageMap = {
+                            '0_0': 'words_of_affirmation',
+                            '0_1': 'words_of_affirmation',
+                            '0_3': 'quality_time',
+                            '1_0': 'physical_touch',
+                            '1_1': 'acts_of_service',
+                            '2_1': 'gifts',
+                            '2_2': 'gifts',
+                            '3_3': 'quality_time'
+                        };
+
+                        userLoveLanguage = languageMap[`${q1}_${q2}`] || 'words_of_affirmation';
+                        showPersonalizedLoveLanguageResult(userLoveLanguage);
+                    }
+                }, PACING.NORMAL));
+            }
+
+            function showPersonalizedLoveLanguageResult(language) {
+                const results = {
+                    'words_of_affirmation': {
+                        title: 'Words of Affirmation 💬',
+                        description: 'Your love language is affirmation! You feel most loved through compliments and encouragement.',
+                        emoji: '💬'
+                    },
+                    'physical_touch': {
+                        title: 'Physical Touch 🤗',
+                        description: 'Your love language is touch! You feel most loved through hugs, cuddles, and closeness.',
+                        emoji: '🤗'
+                    },
+                    'gifts': {
+                        title: 'Receiving Gifts 🎁',
+                        description: 'Your love language is gifts! You feel most loved through thoughtful surprises.',
+                        emoji: '🎁'
+                    },
+                    'quality_time': {
+                        title: 'Quality Time ⏰',
+                        description: 'Your love language is time! You feel most loved when we spend moments together.',
+                        emoji: '⏰'
+                    },
+                    'acts_of_service': {
+                        title: 'Acts of Service 🎭',
+                        description: 'Your love language is service! You feel most loved when I help and support you.',
+                        emoji: '🎭'
+                    }
+                };
+
+                const result = results[language] || results['words_of_affirmation'];
+                changeBoySprite('ThumbsUp');
+
+                area.innerHTML = `
+            <div class="game-instruction">${result.emoji} ${result.title}</div>
+            <div style="color: white; font-family: 'VT323'; text-align: center; margin-top: 20px; font-size: clamp(16px, 4vw, 20px); padding: 0 20px; line-height: 1.6;">
+                ${result.description}
+            </div>
+            <div style="color: rgba(255,255,255,0.7); font-family: 'VT323'; text-align: center; margin-top: 15px; font-size: clamp(14px, 3.2vw, 18px);">
+                I'll remember this for our date! 💕
+            </div>
+            <div class="btn-centered">
+                <button class="puzzle-btn" id="continueLoveBtn" style="margin-top: 30px; padding: 15px 30px; font-size: clamp(10px, 2.5vw, 14px);">
+                    💕 Continue
+                </button>
+            </div>
+        `;
+
+                memoryManager.registerEventListener(
+                    document.getElementById('continueLoveBtn'),
+                    'click',
+                    function () {
+                        stopSkipTimer();
+                        gameActive = false;
+                        area.style.display = 'none';
+                        hideBackButton();
+                        savedStepBeforeActivity = -1;
+                        memoryManager.registerTimeout(setTimeout(nextStep, PACING.NORMAL));
+                    }
+                );
+            }
+
+            showQuestion();
+        }
+
+        // ACTIVITY 4: WOULD YOU RATHER - Complete Implementation
+        function startWouldYouRather() {
+            gameActive = true;
+            savedStepBeforeActivity = currentStep;
+            activityLevelCompleted = 0;
+            const area = document.getElementById('gameContainer');
+            area.style.display = 'flex';
+            showBackButton();
+
+            changeBoySprite('Confused');
+
+            startSkipTimer(() => {
+                stopSkipTimer();
+                gameActive = false;
+                area.style.display = 'none';
+                hideBackButton();
+                changeBoySprite('Normal');
+                savedStepBeforeActivity = -1;
+                memoryManager.registerTimeout(setTimeout(nextStep, PACING.NORMAL));
+            });
+
+            const questions = [
+                {
+                    q: "Would you rather...",
+                    options: [
+                        "🏖️ Beach sunset together",
+                        "🏔️ Mountain sunrise together"
+                    ]
+                },
+                {
+                    q: "Would you rather...",
+                    options: [
+                        "🍕 Cozy dinner at home",
+                        "🍽️ Fancy restaurant date"
+                    ]
+                },
+                {
+                    q: "Would you rather...",
+                    options: [
+                        "🎮 Game night together",
+                        "🎬 Movie marathon together"
+                    ]
+                },
+                {
+                    q: "For our anniversary, would you rather...",
+                    options: [
+                        "✈️ Travel somewhere new",
+                        "🏡 Stay home & celebrate together"
+                    ]
+                }
+            ];
+
+            let currentQ = 0;
+
+            function showQuestion() {
+                const question = questions[currentQ];
+                const choicesHTML = question.options.map((opt, i) =>
+                    `<div class="choice-btn" data-index="${i}">${opt}</div>`
+                ).join('');
+
+                area.innerHTML = `
+            <div class="game-instruction">${question.q}</div>
+            <div class="choice-container">${choicesHTML}</div>
+            <div style="color: rgba(255,255,255,0.5); font-family: 'VT323'; font-size: clamp(12px, 3vw, 16px); text-align: center; margin-top: 20px;">
+                Question ${currentQ + 1} of ${questions.length}
+            </div>
+        `;
+
+                const btns = area.querySelectorAll('.choice-btn');
+                btns.forEach(btn => {
+                    memoryManager.registerEventListener(btn, 'click', function () {
+                        this.classList.add('correct');
+                        changeBoySprite('Happy');
+
+                        if (currentQ === 0) activityLevelCompleted++;
+
+                        memoryManager.registerTimeout(setTimeout(() => {
+                            currentQ++;
+                            if (currentQ < questions.length) {
+                                changeBoySprite('Confused');
+                                showQuestion();
+                            } else {
+                                changeBoySprite('Laughing');
+                                area.innerHTML = `
+                            <div class="game-instruction">I love your choices! 💕</div>
+                            <div style="color: white; font-family: 'VT323'; text-align: center; margin: 30px 20px; font-size: clamp(16px, 4vw, 20px); line-height: 1.6;">
+                                Now I know more about what makes you happy!<br>
+                                I'll plan our dates around your preferences 😊
+                            </div>
+                            <div class="btn-centered">
+                                <button class="puzzle-btn" id="continueWYRBtn" style="margin-top: 30px; padding: 15px 30px; font-size: clamp(10px, 2.5vw, 14px);">
+                                    💕 Continue
+                                </button>
+                            </div>
+                        `;
+
+                                memoryManager.registerEventListener(
+                                    document.getElementById('continueWYRBtn'),
+                                    'click',
+                                    function () {
+                                        stopSkipTimer();
+                                        gameActive = false;
+                                        area.style.display = 'none';
+                                        hideBackButton();
+                                        savedStepBeforeActivity = -1;
+                                        memoryManager.registerTimeout(setTimeout(nextStep, PACING.NORMAL));
+                                    }
+                                );
+                            }
+                        }, PACING.NORMAL));
+                    });
+                });
+            }
+
+            showQuestion();
+        }
+
+        // ACTIVITY 5: TRIVIA GAME - Complete Implementation
+        function startTriviaGame() {
+            gameActive = true;
+            savedStepBeforeActivity = currentStep;
+            activityLevelCompleted = 0;
+            const area = document.getElementById('gameContainer');
+            area.style.display = 'flex';
+            showBackButton();
+
+            changeBoySprite('Winking');
+
+            startSkipTimer(() => {
+                stopSkipTimer();
+                gameActive = false;
+                area.style.display = 'none';
+                hideBackButton();
+                changeBoySprite('Normal');
+                savedStepBeforeActivity = -1;
+                memoryManager.registerTimeout(setTimeout(nextStep, PACING.NORMAL));
+            });
+
+            const triviaQuestions = [
+                {
+                    q: "What percentage of Valentine's Day cards are purchased by women?",
+                    options: ["50%", "65%", "85%", "95%"],
+                    correct: 2,
+                    fact: "85% of Valentine's Day cards are purchased by women! 💌"
+                },
+                {
+                    q: "Which symbol represents love and Valentine's Day?",
+                    options: ["Star ⭐", "Heart ❤️", "Moon 🌙", "Sun ☀️"],
+                    correct: 1,
+                    fact: "The heart symbol has represented love for centuries! ❤️"
+                },
+                {
+                    q: "What do the X's in XOXO represent?",
+                    options: ["Hugs", "Kisses", "Love", "Hearts"],
+                    correct: 1,
+                    fact: "X's represent kisses and O's represent hugs! 💋🤗"
+                },
+                {
+                    q: "Which flower is most associated with Valentine's Day?",
+                    options: ["Tulip 🌷", "Daisy 🌼", "Rose 🌹", "Lily 🌺"],
+                    correct: 2,
+                    fact: "Red roses are the ultimate symbol of love! 🌹"
+                },
+                {
+                    q: "What is Cupid's weapon of choice?",
+                    options: ["Sword ⚔️", "Bow & Arrow 🏹", "Magic Wand 🪄", "Heart Gun 💘"],
+                    correct: 1,
+                    fact: "Cupid shoots arrows that make people fall in love! 🏹💕"
+                }
+            ];
+
+            let currentQ = 0;
+            let score = 0;
+
+            function showTrivia() {
+                const trivia = triviaQuestions[currentQ];
+                const optionsHTML = trivia.options.map((opt, i) =>
+                    `<div class="trivia-option" data-index="${i}">${opt}</div>`
+                ).join('');
+
+                area.innerHTML = `
+            <div class="game-instruction">Valentine's Trivia! 🧠</div>
+            <div class="trivia-score">Score: ${score}/${triviaQuestions.length}</div>
+            <div style="color: white; font-family: 'VT323'; font-size: clamp(18px, 4.5vw, 24px); text-align: center; margin: 20px; line-height: 1.6; padding: 0 20px;">
+                ${trivia.q}
+            </div>
+            <div class="trivia-container">
+                ${optionsHTML}
+            </div>
+            <div style="color: rgba(255,255,255,0.5); font-family: 'VT323'; font-size: clamp(12px, 3vw, 16px); text-align: center; margin-top: 20px;">
+                Question ${currentQ + 1} of ${triviaQuestions.length}
+            </div>
+        `;
+
+                const btns = area.querySelectorAll('.trivia-option');
+                btns.forEach(btn => {
+                    memoryManager.registerEventListener(btn, 'click', function () {
+                        const index = parseInt(this.dataset.index);
+                        if (index === trivia.correct) {
+                            this.classList.add('correct');
+                            score++;
+                            changeBoySprite('Happy');
+
+                            if (currentQ === 0) activityLevelCompleted++;
+
+                            memoryManager.registerTimeout(setTimeout(() => {
+                                area.innerHTML = `
+                            <div class="game-instruction">✨ Correct! ✨</div>
+                            <div style="color: #00ff00; font-family: 'VT323'; font-size: clamp(18px, 4.5vw, 24px); text-align: center; margin: 20px; line-height: 1.6; padding: 0 20px;">
+                                ${trivia.fact}
+                            </div>
+                        `;
+
+                                memoryManager.registerTimeout(setTimeout(() => {
+                                    currentQ++;
+                                    if (currentQ < triviaQuestions.length) {
+                                        changeBoySprite('Winking');
+                                        showTrivia();
+                                    } else {
+                                        showTriviaResult();
+                                    }
+                                }, 2000));
+                            }, 1000));
+                        } else {
+                            this.classList.add('incorrect');
+                            changeBoySprite('Sad');
+                            memoryManager.registerTimeout(setTimeout(() => {
+                                this.classList.remove('incorrect');
+                                changeBoySprite('Winking');
+                            }, 500));
+                        }
+                    });
+                });
+            }
+
+            function showTriviaResult() {
+                changeBoySprite('ThumbsUp');
+
+                const percentage = (score / triviaQuestions.length) * 100;
+                let message = '';
+
+                if (percentage === 100) {
+                    message = "Perfect score! You're amazing! 🌟";
+                } else if (percentage >= 80) {
+                    message = "Wow! You're so smart! 🎉";
+                } else if (percentage >= 60) {
+                    message = "Great job! You did well! 😊";
+                } else {
+                    message = "You tried your best! 💕";
+                }
+
+                area.innerHTML = `
+            <div class="game-instruction">Trivia Complete! 🎊</div>
+            <div class="trivia-score">Final Score: ${score}/${triviaQuestions.length}</div>
+            <div style="color: #ffd700; font-family: 'VT323'; font-size: clamp(20px, 5vw, 28px); text-align: center; margin: 30px 20px; line-height: 1.6;">
+                ${message}
+            </div>
+            <div class="btn-centered">
+                <button class="puzzle-btn" id="continueTriviaBtn" style="margin-top: 30px; padding: 15px 30px; font-size: clamp(10px, 2.5vw, 14px);">
+                    💕 Continue
+                </button>
+            </div>
+        `;
+
+                memoryManager.registerEventListener(
+                    document.getElementById('continueTriviaBtn'),
+                    'click',
+                    function () {
+                        stopSkipTimer();
+                        gameActive = false;
+                        area.style.display = 'none';
+                        hideBackButton();
+                        savedStepBeforeActivity = -1;
+                        memoryManager.registerTimeout(setTimeout(nextStep, PACING.NORMAL));
+                    }
+                );
+            }
+
+            showTrivia();
+        }
+
+        // ACTIVITY 6: MEMORY QUIZ - Complete Implementation
+        function startMemoryQuiz() {
+            gameActive = true;
+            savedStepBeforeActivity = currentStep;
+            activityLevelCompleted = 0;
+            const area = document.getElementById('gameContainer');
+            area.style.display = 'flex';
+            showBackButton();
+
+            changeBoySprite('Confused');
+
+            startSkipTimer(() => {
+                stopSkipTimer();
+                gameActive = false;
+                area.style.display = 'none';
+                hideBackButton();
+                changeBoySprite('Normal');
+                savedStepBeforeActivity = -1;
+                memoryManager.registerTimeout(setTimeout(nextStep, PACING.NORMAL));
+            });
+
+            const questions = [
+                {
+                    q: "Where did we properly meet?",
+                    choices: ["Jaro Cathedral 🙏", "Iloilo City Public Library 📚", "SM City Mall 🛍️", "Festive Walk 🌆"],
+                    correct: 1
+                },
+                {
+                    q: "What did we have on our first date at Festive?",
+                    choices: ["Belgian Cone Ice Cream Chocolate 🍦", "Potato Corner Fries 🍟", "Both! 🍦🍟", "Pizza 🍕"],
+                    correct: 2
+                },
+                {
+                    q: "What did I love most about you from the start?",
+                    choices: ["Your smile 😊", "Your kindness to animals 💕", "Your laugh 😄", "Your eyes 👀"],
+                    correct: 1
+                },
+                {
+                    q: "Where do you feel most at peace?",
+                    choices: ["At the beach 🏖️", "With rescued animals 🐕", "In the library 📚", "At home 🏡"],
+                    correct: 1
+                }
+            ];
+
+            let qIndex = 0;
+
+            function showQuestion() {
+                const quiz = questions[qIndex];
+                const choicesHTML = quiz.choices.map((c, i) =>
+                    `<div class="choice-btn" data-correct="${i === quiz.correct}" data-index="${i}">${c}</div>`
+                ).join('');
+
+                area.innerHTML = `
+            <div class="game-instruction">${quiz.q}</div>
+            <div class="choice-container">${choicesHTML}</div>
+            <div style="color: rgba(255,255,255,0.5); font-family: 'VT323'; font-size: clamp(12px, 3vw, 16px); text-align: center; margin-top: 20px;">
+                Question ${qIndex + 1} of ${questions.length}
+            </div>
+        `;
+
+                const btns = area.querySelectorAll('.choice-btn');
+                btns.forEach(btn => {
+                    memoryManager.registerEventListener(btn, 'click', function () {
+                        const isCorrect = this.dataset.correct === 'true';
+                        if (isCorrect) {
+                            this.classList.add('correct');
+                            changeBoySprite('Happy');
+
+                            if (qIndex === 0) activityLevelCompleted++;
+
+                            memoryManager.registerTimeout(setTimeout(() => {
+                                qIndex++;
+                                if (qIndex < questions.length) {
+                                    changeBoySprite('Confused');
+                                    showQuestion();
+                                } else {
+                                    changeBoySprite('Laughing');
+                                    stopSkipTimer();
+                                    gameActive = false;
+                                    area.style.display = 'none';
+                                    hideBackButton();
+                                    savedStepBeforeActivity = -1;
+                                    memoryManager.registerTimeout(setTimeout(nextStep, PACING.NORMAL));
+                                }
+                            }, PACING.NORMAL));
+                        } else {
+                            this.classList.add('incorrect');
+                            changeBoySprite('Sad');
+                            memoryManager.registerTimeout(setTimeout(() => {
+                                this.classList.remove('incorrect');
+                                changeBoySprite('Confused');
+                            }, 500));
+                        }
+                    });
+                });
+            }
+
+            showQuestion();
+        }
+
+        // ACTIVITY 7: FUTURE DREAMS - Complete Implementation
+        function showFutureDreams() {
+            gameActive = true;
+            savedStepBeforeActivity = currentStep;
+            activityLevelCompleted = 1;
+            const area = document.getElementById('gameContainer');
+            area.style.display = 'flex';
+            area.style.overflowY = 'auto';
+            showBackButton();
+
+            changeBoySprite('Happy');
+
+            area.innerHTML = '<div class="game-instruction">Our Future Together 💫</div>';
+
+            const dreams = [
+                "🏡 Building a home filled with love and laughter - with our rescued strays! 🐾",
+                "✈️ Traveling the world together, hand in hand",
+                "🐕 Rescuing more animals and giving them loving homes",
+                "🌅 Watching countless sunsets by your side",
+                "💑 Growing old together, still madly in love",
+                "⭐ Making all our dreams come true, together"
+            ];
+
+            const dreamsContainer = document.createElement('div');
+            dreamsContainer.style.cssText = `
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding: 20px;
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+    `;
+
+            dreams.forEach((dream, index) => {
+                memoryManager.registerTimeout(setTimeout(() => {
+                    const card = document.createElement('div');
+                    card.className = 'dream-card';
+                    card.innerHTML = dream;
+                    dreamsContainer.appendChild(card);
+
+                    if (index === dreams.length - 1) {
+                        changeBoySprite('Blushing');
+                        memoryManager.registerTimeout(setTimeout(() => {
+                            const btnContainer = document.createElement('div');
+                            btnContainer.className = 'btn-centered';
+
+                            const continueBtn = document.createElement('button');
+                            continueBtn.className = 'puzzle-btn';
+                            continueBtn.innerHTML = '💕 Continue to Final Question';
+                            continueBtn.style.cssText = `
+                        margin: 30px 0;
+                        padding: 15px 30px;
+                        font-size: clamp(10px, 2.5vw, 14px);
+                        animation: pulse 2s infinite;
+                    `;
+
+                            memoryManager.registerEventListener(continueBtn, 'click', () => {
+                                gameActive = false;
+                                area.style.display = 'none';
+                                hideBackButton();
+                                savedStepBeforeActivity = -1;
+                                memoryManager.registerTimeout(setTimeout(nextStep, PACING.NORMAL));
+                            });
+
+                            btnContainer.appendChild(continueBtn);
+                            dreamsContainer.appendChild(btnContainer);
+                        }, PACING.NORMAL));
+                    }
+                }, index * PACING.NORMAL));
+            });
+
+            area.appendChild(dreamsContainer);
+        }
+
+        // ACTIVITY 8: FINAL GALLERY - Complete Implementation
+        function showFinalGallery() {
+            gameActive = true;
+            savedStepBeforeActivity = currentStep;
+            activityLevelCompleted = 1;
+            const area = document.getElementById('gameContainer');
+            area.style.display = 'flex';
+            area.style.overflowY = 'auto';
+            showBackButton();
+        }
+
+        const galleryItems = [
+            {
+                type: 'image',
+                src: 'photo1.JPG',
+                caption: 'January 31st - When we first met at the library 💕'
+            },
+            {
+                type: 'video',
+                src: 'memory1.mp4',
+                caption: 'WOOWWW GWAPAAA'
+            },
+            {
+                type: 'image',
+                src: 'image2.JPEG',
+                caption: 'MY ONLY EXCEPTION <333'
+            },
+            {
+                type: 'video',
+                src: 'IMG_4813.MOV',
+                caption: 'IIIILOOOOVEEEEYOUUUMOARRRRRR'
+            },
+            {
+                type: 'image',
+                src: 'photo3.JPG',
+                caption: 'iykyk hehe <3333 ><💖'
+            },
+            {
+                type: 'video',
+                src: 'memory3.mp4',
+                caption: 'My BABY and her BABIEESSS <3333'
+            }
+        ];
+
+        function createFinalGallery() {
+            const grid = document.getElementById('galleryGrid');
+            grid.innerHTML = '';
+
+            galleryItems.forEach((item, index) => {
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
+                galleryItem.style.animationDelay = `${index * 0.1}s`;
+
+                const mediaDiv = document.createElement('div');
+                mediaDiv.className = 'gallery-media';
+
+                if (item.type === 'video') {
+                    const video = document.createElement('video');
+                    video.src = item.src;
+                    video.preload = 'metadata';
+                    video.playsinline = true;
+                    video.controls = true;
+
+                    memoryManager.registerMediaElement(video);
+
+                    video.onerror = () => {
+                        video.style.display = 'none';
+                        const placeholder = document.createElement('div');
+                        placeholder.style.cssText = `
+                            width: 100%;
+                            height: 100%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            background: #1a1a2e;
+                            color: white;
+                            font-family: 'VT323';
+                            font-size: 18px;
+                        `;
+                        placeholder.innerHTML = '🎬 Video not available';
+                        mediaDiv.appendChild(placeholder);
+                    };
+
+                    mediaDiv.appendChild(video);
+                } else {
+                    const img = document.createElement('img');
+                    img.src = item.src;
+                    img.alt = item.caption;
+                    img.onerror = () => {
+                        img.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%231a1a2e%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 fill=%22white%22 font-size=%2224%22 text-anchor=%22middle%22 dy=%22.3em%22%3E%F0%9F%93%B7 Image%3C/text%3E%3C/svg%3E';
+                    };
+                    mediaDiv.appendChild(img);
+                }
+
+                const caption = document.createElement('div');
+                caption.className = 'gallery-caption';
+                caption.innerHTML = item.caption;
+
+                galleryItem.appendChild(mediaDiv);
+                galleryItem.appendChild(caption);
+                grid.appendChild(galleryItem);
+            });
+        }
+
+        function showFinalGallery() {
+            createFinalGallery();
+            document.getElementById('finalGallery').style.display = 'block';
+            document.getElementById('mainUI').style.display = 'none';
+            document.getElementById('dateCard').style.display = 'none';
+        }
+
+        function showFinalScreen() {
+            document.getElementById('finalGallery').style.display = 'none';
+            document.getElementById('finalScreen').style.display = 'flex';
+
+            // Massive confetti celebration
+            for (let i = 0; i < 150; i++) {
+                memoryManager.registerTimeout(setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    const colors = ['#ff1493', '#ff69b4', '#ffd700', '#ff6b6b', '#4ecdc4', '#ffe66d'];
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '-10px';
+                    document.body.appendChild(confetti);
+                    memoryManager.registerTimeout(setTimeout(() => confetti.remove(), 3000));
+                }, i * 20));
+            }
+        }
+
+        function handleNoClick(event) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    const noBtn = document.getElementById('noBtn');
+    const statements = [
+        "Are you sure? 🥺",
+        "Really sure? 💔",
+        "Think again... 🌹",
+        "Last chance! 😭"
+    ];
+
+    if (noCount < statements.length) {
+        // Change the text of the "No" button to the next statement
+        noBtn.innerHTML = statements[noCount];
+        
+        // Increase the size of the "Yes" button slightly to make it more tempting
+        const yesBtn = document.querySelector('.yes-btn');
+        const currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
+        yesBtn.style.fontSize = (currentSize * 1.2) + 'px';
+        yesBtn.style.padding = (parseFloat(window.getComputedStyle(yesBtn).padding) * 1.1) + 'px';
+        
+        noCount++;
+        changeBoySprite('Sad'); // Change character emotion to sad
+    } else {
+        // Fix: Hide the buttons once all statements are exhausted
+        // and do NOT trigger handleYesClick
+        document.getElementById('finalButtons').style.display = 'none';
+        document.getElementById('text').innerHTML = "I understand... but my heart will always be yours. 💖";
+        changeBoySprite('Crying');
+    }
+}
+
+        function handleYesClick(event) {
+            event.stopPropagation();
+            event.preventDefault();
+
+            memoryManager.clearAllIntervals();
+            memoryManager.clearAllTimeouts();
+
+            document.getElementById('finalButtons').style.display = 'none';
+            document.getElementById('msgBox').style.display = 'none';
+
+            if (typewriterInterval) {
+                memoryManager.clearInterval(typewriterInterval);
+                typewriterInterval = null;
+            }
+
+            isTyping = false;
+            changeBoySprite('Laughing');
+
+            const languageNames = {
+                'words_of_affirmation': 'Words of Affirmation 💬',
+                'physical_touch': 'Physical Touch 🤗',
+                'gifts': 'Receiving Gifts 🎁',
+                'quality_time': 'Quality Time ⏰',
+                'acts_of_service': 'Acts of Service 🎭'
+            };
+
+            document.getElementById('text').innerHTML = `YES! You just made me the happiest! 💕✨
+
+I know your love language is: ${languageNames[userLoveLanguage] || 'Love 💕'}
+
+Let me show you how much I love you on our Valentine's Day! 🌹`;
+
+            const dateCard = document.getElementById('dateCard');
+            dateCard.style.display = 'block';
+
+            memoryManager.registerTimeout(setTimeout(() => {
+                dateCard.scrollTop = 0;
+            }, 100));
+
+            // Confetti celebration
+            for (let i = 0; i < 100; i++) {
+                memoryManager.registerTimeout(setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    const colors = ['#ff1493', '#ff69b4', '#ffd700', '#ff6b6b', '#4ecdc4', '#ffe66d'];
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '-10px';
+                    document.body.appendChild(confetti);
+                    memoryManager.registerTimeout(setTimeout(() => confetti.remove(), 3000));
+                }, i * 30));
+            }
+
+            // Floating hearts
+            memoryManager.registerTimeout(setTimeout(() => {
+                for (let i = 0; i < 30; i++) {
+                    memoryManager.registerTimeout(setTimeout(() => {
+                        const heart = document.createElement('div');
+                        heart.innerHTML = '💕';
+                        heart.style.position = 'fixed';
+                        heart.style.left = Math.random() * 100 + '%';
+                        heart.style.bottom = '-50px';
+                        heart.style.fontSize = (20 + Math.random() * 30) + 'px';
+                        heart.style.zIndex = '1000';
+                        heart.style.pointerEvents = 'none';
+                        document.body.appendChild(heart);
+
+                        let pos = -50;
+                        const float = memoryManager.registerInterval(setInterval(() => {
+                            pos += 4;
+                            heart.style.bottom = pos + 'px';
+                            heart.style.opacity = 1 - (pos / window.innerHeight);
+                            if (pos > window.innerHeight) {
+                                memoryManager.clearInterval(float);
+                                heart.remove();
+                            }
+                        }, 30));
+                    }, i * 100));
+                }
+            }, 500));
+
+            // Show final gallery after 20 seconds
+            memoryManager.registerTimeout(setTimeout(() => {
+                showFinalGallery();
+            }, 20000));
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            memoryManager.cleanupAll();
+        });
+    </script>
+    
+    <div id="skipTimer" class="skip-timer"></div>
+</body>
+</html>
